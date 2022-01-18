@@ -1,0 +1,298 @@
+---
+title: "Pressure or Overconfidence: Why do batsmen get out?"
+author: "Dr Preet Deep Singh"
+affiliation: "Invest India"
+date: "12/01/2022"
+output: 
+  bookdown::pdf_document2:
+    toc: no
+    citation_package: natbib
+    number_sections: yes
+    keep_tex: yes
+abstract: "Batsmen would be overconfident after a boundary and under pressure after a dot ball. Pressure would be higher in the second innings and over confidence might dominate in the first innings. We look at 1,50,460 deliveries and find that batsmen are more likely to get out after a dot ball in the second innings as compared to the first innings. "
+documentclass: "article"
+editor_options: 
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+bibliography: references.bib
+link-citations: true
+csl: apa.csl
+---
+
+```{r setup, echo=FALSE, message=FALSE,warning=FALSE, tidy=TRUE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(dplyr)
+library(stargazer)
+library(bookdown)
+library(ARTofR)
+library(ggplot2)
+#library(BSDA) #For z test
+#library(dgof) #For z test
+library(readr)
+df1 <- read_csv("deliveries.csv")
+df1<-cbind(1:length(df1$match_id),df1)
+colnames(df1)[1]<-"sno"
+
+
+## Subset of wickets
+dfw<-subset(df1,!is.na(player_dismissed)) #To get all previous balls
+dfw<-subset(dfw, over+ball >2) #no first ball wickets here
+#df2<-data.frame()
+#for(i in 1:length(dfw$sno)){
+  
+#  df2[i,1:22]<-df1[dfw$sno[i]-1,1:22]
+#}
+#write.csv(df2,"dfbeforewicket.csv")
+df2 <- read_csv("dfbeforewicket.csv")
+df2<-df2[,2:23]# Somehow we had a bad column in the beginning. This takes care of that.
+df3<-rbind(dfw,df2)
+df3<-df3[order(df3$sno,decreasing=FALSE),]
+```
+
+\section{Introduction}
+
+Shardul Thakur mentioned in an interview that once he gets hit for a boundary, he tries to get a wicket.\footnote{ADD SOURCE}. This is presumably a common sentiment. The batsman could feel more confident after a boundary and may hit an improper shot allowing bowlers to take that wicket. Another reason for an improper shot could be pressure. A dot ball causes pressure. It could also indicate good bowling and/or tight fielding. In order to isolate the role of pressure we look at the difference between innings. A dot ball is likely to cause more pressure in the second innings while chasing rather than in the first innings while scoring. 
+
+\section{Data}
+
+```{r datasummary, results='asis'}
+
+stargazer(df1[2:20], title="This table shows the summary of all the deliveries used for the study",header=FALSE)
+```
+We get `r length(df1$sno)` deliveries from `r length(unique(df1$match_id))` matches. These span all forms of cricket: national, league, international, one days and tests. This data is sourced from Kaggle\footnote{https://www.kaggle.com/ash316/let-s-play-cricket/data}. I identify the deliveries that have a wicket. I create a subset of the data that only contains deliveries that had wickets. I then compile a subset of the data that only includes balls immediately preceding the wicket ball. I then look at the frequency distribution of the scores in that dataset. Since the number of deliveries is not the same, the graphs are not comparable. I therefore look at the percentage break up of the composition of scores. There are eight values possible: 7 runs and wicket. In case of a no-ball or wide, the runs column indicates only the extra number of runs. 
+
+I run another version with the previous ball faced by the same batsman. For example, if a batsman was bowled on the first ball of the second over, then I either ignore this entry or look at only those cases where the last ball indicated 1/3 runs scored by the batsman. This allows me to isolate pressure at the player level which might be higher than that at the team level. 
+
+
+\section{Results}
+\subsection{Innings wise}
+
+
+```{r first }
+df4<-df2 #For safety
+#xxx_box1("For Same Batsman")
+
+#...............................................................................
+#                                                                              .
+#  For Same Batsman                                                            .
+#                                                                              .
+#...............................................................................
+
+# df2a<-subset(df2, batsman_runs!=1) #To remove singles
+# df2b<-subset(df2, ball==1) #To remove cases where there was a strike change. So previous ball was single and over change or new over.
+# Strike change = 1,3,5 which si %% 2 != 0
+df2d<-subset(df2, batsman_runs%%2==0) # Only cases where strike has not changed 
+
+df2c<-subset(df2,ball==6) #Only previous over , so first ball wickets
+df2c2<-subset(df2c, batsman_runs%%2!=0 )
+
+df2e<-rbind(df2d,df2c2) # This is our file
+df2<-df2e #more for nomenclature
+df2$total_runsOrg<-df2$total_runs
+df2$total_runsOrg<-as.numeric(as.character(df2$total_runsOrg))
+df2$total_runs<-ifelse(is.na(df2$player_dismissed),df2$total_runs,"W")
+
+
+#...............................................................................
+#                                                                              .
+#  Coming back to DF2                                                           .
+#                                                                              .
+#...............................................................................
+
+
+prevballsummary<-df2%>%group_by(total_runs,inning)%>% tally() #To get a count of all things that happened prevoiously
+prevballsummary1<-filter(prevballsummary,inning==1)
+prevballsummary1$perc<-prevballsummary1$n/sum(prevballsummary1$n)
+prevballsummary2<-filter(prevballsummary,inning==2)
+prevballsummary2$perc<-prevballsummary2$n/sum(prevballsummary2$n)
+prevballsummary<-select(prevballsummary,total_runs,n)
+```
+
+In the graphs we can see that in 42% of the cases the wicket is preceded by a dot ball in the first innings whereas it is seen in 45% of the cases in the second innings. Along with 7% of the balls that had a wicket on the previous ball. Just these two account for more than half the total wickets and that indicates that pressure has a serious role to play in dismissals. 
+```{r firstplots}
+
+#plot1<-ggplot(data=prevballsummary,aes( x=reorder(total_runs,-n),y=n))+geom_bar(stat="identity") # Somehow this is not in order
+plot1<-ggplot(data=prevballsummary,aes( x=total_runs,y=n))+geom_bar(stat="identity") +ggtitle("Frequency distribution of outcomes on the ball preceding the wicket")
+#plot1
+#plot2<-ggplot(data=prevballsummary1,aes( x=reorder(total_runs,-n),y=n))+geom_bar(stat="identity")+ggtitle("Frequency distribution of outcomes on the ball preceding the wicket in first innings") # Only singles are extras
+plot2b<-ggplot(data=prevballsummary1,aes( x=reorder(total_runs,-n),y=perc))+geom_bar(stat="identity")+ggtitle("Frequency distribution of outcomes on the ball preceding \n the wicket in the first innings") + xlab("Outcome")+ylab("Percentage")+
+  geom_text(aes(label=round(perc,2)), position=position_dodge(width=0.9), vjust=-0.25)# Only singles are extras
+plot2b
+#plot3<-ggplot(data=prevballsummary2,aes( x=reorder(total_runs,-n),y=n))+geom_bar(stat="identity")+ggtitle("Before wicket in second innings") # Only singles are extras
+plot3b<-ggplot(data=prevballsummary2,aes( x=reorder(total_runs,-n),y=perc))+geom_bar(stat="identity")+ggtitle("Frequency distribution of outcomes on the ball preceding \n the wicket in the second innings") +xlab("Outcome")+ylab("Percentage")+
+  geom_text(aes(label=round(perc,2)), position=position_dodge(width=0.9), vjust=-0.25)# Only singles are extras
+plot3b
+
+```
+
+```{r fifthdifferences}
+
+df2$Zero<-ifelse(df2$total_runs==0,1,0)
+df2second<-subset(df2,inning==2)
+df2first<-subset(df2,inning==1)
+df1$Zero<-ifelse(df1$total_runs==0,1,0)
+df1second<-subset(df1,inning==2)
+df1first<-subset(df1,inning==1)
+```
+
+I examine the difference in the two innings with a closer lens.
+We do a T test to examine the difference in the runs scored by the batsman on the ball before the wicket in the first as well as the second innings. We find the mean value of runs scored by the batsman on the ball preceeding the wicket in the first innings as `r round(t.test(df2first$batsman_runs,df2second$batsman_runs)$estimate[1],2)` and `r round(t.test(df2first$batsman_runs,df2second$batsman_runs)$estimate[2],2)` in the second innings. The p value of the difference is `r t.test(df2first$batsman_runs,df2second$batsman_runs)$p.value` making it statistically very significant. Similarly we code a column as 1/0. 1 when the score on the ball is zero and 0 in all other cases. We find that the mean value in the first innings, as per the ball preceeding the wicket is `r round(t.test(df2first$Zero,df2second$Zero)$estimate[1],2)` and in the second innings it is `r round(t.test(df2first$Zero,df2second$Zero)$estimate[2],2)` with a p value of `r t.test(df2first$Zero,df2second$Zero)$p.value` making it statistically very significant.
+
+
+I do a further test to examine whether the balls preceeding the wicket are similar to the rest of the balls in the match. 
+
+
+```{r secondmatch}
+df1$total_runs<-ifelse(is.na(df1$player_dismissed),df1$total_runs,"W")
+prevballsummaryall<-df1%>%group_by(total_runs,inning)%>% tally()
+prevballsummaryall1<-filter(prevballsummaryall,inning==1)
+prevballsummaryall1$perc<-prevballsummaryall1$n/sum(prevballsummaryall1$n)
+prevballsummaryall2<-filter(prevballsummaryall,inning==2)
+prevballsummaryall2$perc<-prevballsummaryall2$n/sum(prevballsummaryall2$n)
+#plot4<-ggplot(data=prevballsummaryall,aes( x=reorder(total_runs,-n),y=n))+geom_bar(stat="identity") +ggtitle("Throughout the match") # Somehow this is not in order
+#plot4<-ggplot(data=prevballsummaryall,aes( x=total_runs,y=n))+geom_bar(stat="identity")  + ggtitle("Throughout the match") 
+#plot4
+plot5<-ggplot(data=prevballsummaryall1,aes( x=total_runs,y=perc))+geom_bar(stat="identity")  + ggtitle("Frequency distribution of outcomes on all balls \n in the first innings")+xlab("Outcome")+ylab("Percentage")+
+  geom_text(aes(label=round(perc,2)), position=position_dodge(width=0.9), vjust=-0.25)# Only singles are extras
+plot5
+plot6<-ggplot(data=prevballsummaryall2,aes( x=total_runs,y=perc))+geom_bar(stat="identity")  + ggtitle("Frequency distribution of outcomes on all balls \n in the second innings")+xlab("Outcome")+ylab("Percentage")+
+  geom_text(aes(label=round(perc,2)), position=position_dodge(width=0.9), vjust=-0.25)# Only singles are extras
+plot6
+# `r round(mean(subset(df1,inning==1)$total_runs,na.rm=TRUE),2)` 
+#is `r round(mean(df2first$total_runsOrg,na.rm=TRUE),2)` with a 
+# p value of `r round(t.test(subset(df1,inning==1)$total_runs,df2first$total_runsOrg)$p.value,5)`. Similarly  ##SOmething here.
+# `r round(t.test(df2first$batsman_runs,df2second$batsman_runs)$estimate[1],2)` and `r round(t.test(df2first$batsman_runs,df2second$batsman_runs)$estimate[1],2)` in the 
+```
+
+In these graphs I show that the balls preceding the wicket are different from the overall composition of the innings. For example if the entire match is composed of deliveries with outcomes similar to those on deliveries preceding the wicket then there would be very little predictive value. The graphs show a significantly different composition of outcomes. Statistically the mean value of the outcome on all balls of the first innings is `r round(mean(df1first$total_runs,na.rm=TRUE),2)`
+and that for all balls preceding wickets in the first innings is `r round(mean(df2first$total_runsOrg,na.rm=TRUE),2)` with a significant p value.
+
+Looking at Zeros: The mean value of the Zero column for all the deliveries in the first innings is `r round(mean(df1first$Zero,na.rm=TRUE),2)` versus that of all deliveries preceding a wicket in the first innings is `r round(mean(df2first$Zero,na.rm=TRUE),2)` with a p value of 
+`r round(t.test(df1first$Zero,df2first$Zero)$p.value,2)`
+The mean value of the Zero column for all the deliveries in the second innings is `r round(mean(df1second$Zero,na.rm=TRUE),2)` versus that of all deliveries preceding a wicket in the second innings is `r round(mean(df2second$Zero,na.rm=TRUE),2)` with a p value of 
+`r round(t.test(df1second$Zero,df2second$Zero)$p.value,5)`. Note that a higher mean value here means more zeroes because each row with zero score is represented as 1. It shows a substantially higher number of dot balls before a wicket as compared to the rest of the match. 
+
+
+
+
+```{r thirdboundary}
+
+dfboundary<-subset(df1,total_runs>3)
+dfboundary<-subset(dfboundary,total_runs!="W")
+#unique(dfboundary$total_runs)# This includes Wickets also, greater than 3 
+
+
+#dfemp1<-data.frame()
+#for(i in 1:length(dfboundary$sno)){
+#  
+#  dfemp1[i,1:22]<-df1[dfboundary$sno[i]+1,1:22]
+#}
+#write.csv(dfemp1,"dfafterboundary.csv")
+dfemp1<-read.csv("dfafterboundary.csv")
+dfemp1<-dfemp1[,2:23]
+dfafterboundary<-dfemp1 #Remove first ball of the match
+dfafterboundary<-subset(dfafterboundary,ball+over>2)
+
+dfafterboundary$total_runs<-ifelse(is.na(dfafterboundary$player_dismissed),dfafterboundary$total_runs,"W")
+prevballsummaryafterboundary<-dfafterboundary%>%group_by(total_runs,inning)%>% tally()
+prevballsummaryafterboundary1<-filter(prevballsummaryafterboundary,inning==1)
+prevballsummaryafterboundary2<-filter(prevballsummaryafterboundary,inning==2)
+plot7<-ggplot(data=prevballsummaryafterboundary,aes( x=total_runs,y=n))+geom_bar(stat="identity") +ggtitle("After Boundary")
+plot7
+plot8<-ggplot(data=prevballsummaryafterboundary1,aes( x=total_runs,y=n))+geom_bar(stat="identity") +ggtitle("After Boundary in First Innings")+ylim(0,5500)
+plot8
+plot9<-ggplot(data=prevballsummaryafterboundary2,aes( x=total_runs,y=n))+geom_bar(stat="identity") +ggtitle("After Boundary in Second Innings")+ylim(0,5500)
+plot9
+
+
+```
+
+
+```{r thirdzero}
+
+dfzero<-subset(df1,total_runs==0)
+#unique(dfzero$total_runs)# This is only zero
+#dfemp2<-data.frame()
+#for(i in 1:length(dfzero$sno)){
+#  
+#  dfemp2[i,1:22]<-df1[dfzero$sno[i]+1,1:22]
+#}
+#write.csv(dfemp2,"dfafterzero.csv")
+dfemp2<-read.csv("dfafterzero.csv")
+dfafterzero<-dfemp2
+dfafterzero<-subset(dfafterzero,ball+over>2)
+prevballsummaryafterzero<-dfafterzero%>%group_by(total_runs,inning)%>% tally()
+prevballsummaryafterzero1<-filter(prevballsummaryafterzero,inning==1)
+prevballsummaryafterzero2<-filter(prevballsummaryafterzero,inning==2)
+
+
+plot10<-ggplot(data=prevballsummaryafterzero,aes( x=total_runs,y=n))+geom_bar(stat="identity") +ggtitle("After Dot")
+plot10
+plot11<-ggplot(data=prevballsummaryafterzero1,aes( x=total_runs,y=n))+geom_bar(stat="identity") +ggtitle("After Dot in First Innings") +ylim(0,10000)
+plot11
+plot12<-ggplot(data=prevballsummaryafterzero2,aes( x=total_runs,y=n))+geom_bar(stat="identity") +ggtitle("After Dot in Second Innings")+ylim(0,10000)
+plot12
+ ## There is also a difference in number of dot balls 
+```
+
+```{r fourpercplots}
+
+prevballsummaryafterzero1$perc<-prevballsummaryafterzero1$n/sum(prevballsummaryafterzero1$n)
+prevballsummaryafterzero2$perc<-prevballsummaryafterzero2$n/sum(prevballsummaryafterzero2$n)
+prevballsummaryafterboundary1$perc<-prevballsummaryafterboundary1$n/sum(prevballsummaryafterboundary1$n)
+prevballsummaryafterboundary2$perc<-prevballsummaryafterboundary2$n/sum(prevballsummaryafterboundary2$n)
+
+
+plot13<-ggplot(data=prevballsummaryafterboundary1,aes( x=total_runs,y=perc))+geom_bar(stat="identity") +ggtitle("After Boundary in First Innings in %") +
+  geom_text(aes(label=round(perc,2)), position=position_dodge(width=0.9), vjust=-0.25)
+plot13
+plot14<-ggplot(data=prevballsummaryafterboundary2,aes( x=total_runs,y=perc))+geom_bar(stat="identity") +ggtitle("After Boundary in Second Innings in %") +
+  geom_text(aes(label=round(perc,2)), position=position_dodge(width=0.9), vjust=-0.25)
+plot14
+
+plot15<-ggplot(data=prevballsummaryafterzero1,aes( x=total_runs,y=perc))+geom_bar(stat="identity") +ggtitle("After Dot in First Innings in %") +
+  geom_text(aes(label=round(perc,2)), position=position_dodge(width=0.9), vjust=-0.25)
+plot15
+plot16<-ggplot(data=prevballsummaryafterzero2,aes( x=total_runs,y=perc))+geom_bar(stat="identity") +ggtitle("After Dot in Second Innings, in %")+
+  geom_text(aes(label=round(perc,2)), position=position_dodge(width=0.9), vjust=-0.25)
+plot16
+```
+
+
+
+match this with total number of 0,s and Ws in the game 
+1. Summary of Wicket balls, over and ball and innings
+2. Summary of previous balls, over and all and innings
+3. No first ball wickets here
+
+
+Data source: https://www.kaggle.com/ash316/let-s-play-cricket/data
+
+
+
+
+
+
+
+
+In a series of papers (@singh2021make ) , I try to examine the following questions.
+
+
+Some of my other work pertains to perceptions of founders in startups ([@singh2021perception1; @singh2021perception2; @singh2021perception3; @singh2021perception4; @singh2021perception5; @singh2021start]), Olympic medals ([@singh2021olympic; @singh2021names]), Covid data [@singh2020close; @singh2020quantifying], trading strategy [@singh2015square], CSR [@singh2016whether], Crowdfunding [@singh2021crowdfunding; @singh2021emotional] and some Finance and Director diligence stuff [@singh2016impact; @singh2016executive; @singh2017essay] .
+
+
+
+
+
+
+
+
+
+
+
+

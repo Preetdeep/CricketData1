@@ -177,8 +177,8 @@ for rank in range(m_ - 1, -1, -1):
     i = order[rank]
     prev = min(prev, ps.values[i] * m_ / (rank + 1))
     adj[i] = prev
-num.add("BHMinP", f"{adj.min():.2f}")
-num.add("BHFourXP", f"{adj[list(ps.index).index('prev_four_x2')]:.2f}")
+num.add("BHMinP", f"={adj.min():.2f}")
+num.add("BHFourXP", f"={adj[list(ps.index).index('prev_four_x2')]:.2f}")
 
 num.write()
 print(rob.to_string())

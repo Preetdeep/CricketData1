@@ -44,10 +44,10 @@ dfil = filt(d)
 dot = lambda x: ((x.total_runs == 0) & x.player_dismissed.isna()).mean() * 100
 bd = lambda x: (x.total_runs.isin([4, 6]) & x.player_dismissed.isna()).mean() * 100
 
-fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.6), sharey=False)
+fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.8), sharey=False)
 for ax, (fn, title) in zip(axes, [(dot, "Dot balls"), (bd, "Boundaries")]):
     x = np.arange(2)
-    w = 0.26
+    w = 0.27
     vals = [[fn(src[src.inning == i]) for i in (1, 2)] for src in (d, dfil, pv)]
     labs = ["All balls", "All balls, same parity filter", "Ball before a wicket (draft)"]
     cols = [GRID, BLUE, ORANGE]
@@ -56,7 +56,7 @@ for ax, (fn, title) in zip(axes, [(dot, "Dot balls"), (bd, "Boundaries")]):
         for b_, val in zip(bars, v):
             ax.text(b_.get_x() + b_.get_width() / 2, val + 0.6, f"{val:.0f}", ha="center", va="bottom",
                     fontsize=7, color=MUTED)
-    ax.set_xticks(x, ["1st innings", "2nd innings"])
+    ax.set_xticks(x, ["Innings 1", "Innings 2"])
     ax.set_title(title, loc="left", color=INK)
     ax.set_ylabel("Share of deliveries (%)")
     ax.grid(axis="x", visible=False)
@@ -171,7 +171,7 @@ for ax, lab, col in zip(axes, ["Dismissal", "Boundary"], [INK, BLUE]):
     ax.errorbar(sub.k, sub.b, yerr=1.96 * sub.se, fmt="o-", color=col, ms=4, elinewidth=1.4)
     ax.set_xticks([1, 2, 3, 4], ["1", "2", "3", "4+"])
     ax.set_xlabel("Consecutive dots faced by striker")
-    ax.set_title(f"{lab}: change vs. previous ball 1--3 runs (pp)", loc="left")
+    ax.set_title(f"{lab}, change in pp", loc="left")
     ax.grid(axis="x", visible=False)
 fig.tight_layout()
 fig.savefig(FIGURES / "fig5_dot_runs.pdf", bbox_inches="tight")

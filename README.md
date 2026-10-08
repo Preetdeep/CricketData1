@@ -14,8 +14,9 @@ Ball-by-ball evidence on dismissal risk and batting aggression in Twenty20 crick
    base rate after a dot or a six. There is no innings or chase-pressure pattern after a multiple-testing
    correction.
 3. Batters do respond to the previous ball. Boundary rates rise after a dot and, more strongly, after a
-   six. A within-innings permutation test (Miller-Sanjurjo-style bias correction) shows this response
-   comes from the order of balls, not from the day's conditions.
+   six. A within-innings permutation test (Miller-Sanjurjo-style bias correction) shows the after-dot
+   response comes from the order of balls, not from the day's conditions. Part of the after-six
+   response reflects a bowler being hit on the day.
 
 ## Reproduce
 

@@ -26,8 +26,9 @@ rows = [
 ]
 cols = [("All", s), ("First innings", s[s.inning == 1]), ("Second innings", s[s.inning == 2])]
 lines = [r"\begin{tabular}{lccc}", r"\toprule", " & " + " & ".join(c for c, _ in cols) + r" \\", r"\midrule"]
-lines.append(r"\multicolumn{4}{l}{\emph{Panel A. Outcome on the current ball}} \\")
 for i, (lab, fn) in enumerate(rows):
+    if i == 2:
+        lines.append(r"\multicolumn{4}{l}{\emph{Panel A. Outcome on the current ball}} \\")
     if i == 12:
         lines.append(r"\multicolumn{4}{l}{\emph{Panel B. State before the ball}} \\")
     lines.append(f"{lab} & " + " & ".join(fn(x) for _, x in cols) + r" \\")

@@ -71,15 +71,21 @@ pd.DataFrame(
 # ---------------------------------------------------------------------------
 s["yy"] = 100 * s.cur_boundary
 specs = [
-    ("State + people", f"{STATE} + {PEOPLE}"),
-    ("+ match FE", f"{STATE} + {PEOPLE} + match_id"),
-    ("+ team-innings FE", f"over + wkts_before + bf_bin + br_bin + {PEOPLE} + innings_id"),
-    ("+ bowler-match FE", f"over_inn + wkts_before + bf_bin + br_bin + batsman + bowler_match"),
-    ("Batter-innings FE", f"over_inn + wkts_before + bf_bin + br_bin + bowler + batter_inn"),
+    ("Baseline", f"{STATE} + {PEOPLE}"),
+    ("Match", f"{STATE} + {PEOPLE} + match_id"),
+    ("Team innings", f"over + wkts_before + bf_bin + br_bin + {PEOPLE} + innings_id"),
+    ("Bowler by match", f"over_inn + wkts_before + bf_bin + br_bin + batsman + bowler_match"),
+    ("Batter by innings", f"over_inn + wkts_before + bf_bin + br_bin + bowler + batter_inn"),
 ]
 fe_models = [pf.feols(f"yy ~ {X} | {fe}", data=s, vcov=VC) for _, fe in specs]
 footer2 = [
-    ("Fixed effects", [lab for lab, _ in specs]),
+    ("Match-state FE", yesno([1] * 5)),
+    ("Batter FE", yesno([1, 1, 1, 1, 0])),
+    ("Bowler FE", yesno([1, 1, 1, 0, 1])),
+    ("Match FE", yesno([0, 1, 0, 0, 0])),
+    ("Team-innings FE", yesno([0, 0, 1, 0, 0])),
+    ("Bowler-by-match FE", yesno([0, 0, 0, 1, 0])),
+    ("Batter-by-innings FE", yesno([0, 0, 0, 0, 1])),
     ("Observations", [f"{m._N:,}" for m in fe_models]),
 ]
 tab = regtable(fe_models, ["prev_dot", "prev_four", "prev_six"], labels, footer2)

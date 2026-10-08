@@ -14,6 +14,7 @@ analysis:
 	cd $(A) && $(PY) robustness.py
 	cd $(A) && $(PY) momentum.py
 	cd $(A) && $(PY) figures.py
+	cd $(A) && $(PY) typeset_tables.py
 
 paper:
 	cd paper && latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex

@@ -20,13 +20,19 @@ Ball-by-ball evidence on dismissal risk and batting aggression in Twenty20 crick
 
 ## Reproduce
 
+One command rebuilds the panel, every table, figure and number, and the manuscript PDF from the raw files:
+
 ```bash
-pip install -r requirements.txt    # Python 3.11+
-make analysis                      # panel, tables, figures, numbers (~50 min: 200-draw permutation)
-make paper                         # needs a TeX distribution with latexmk
+pip install -r requirements.txt && make
 ```
 
-Set `PERM_R=20` for a quick run of `analysis/momentum.py`.
+Python 3.11+ and a TeX distribution with `latexmk` are required. `make` is the pipeline (`analysis`, then `paper`). The permutation test uses 200 draws and takes about 50 minutes; set `PERM_R=20` to shorten that step only.
+
+## Data
+
+`data/raw/deliveries.csv` and `data/raw/matches.csv` are a public GitHub mirror of the Kaggle IPL ball-by-ball dataset, copied from [insaid2018/Term-1](https://github.com/insaid2018/Term-1) (`Data/Projects/`). The copies in this repository match that mirror byte for byte. SHA-256 checksums are in `data/README.md`.
+
+The mirror repository publishes no licence file. The 2022 drafts cite the Kaggle notebook ["Let's play cricket"](https://www.kaggle.com/code/ash316/let-s-play-cricket), which is released under the Apache 2.0 licence; that licence covers the notebook, not these CSV files. No dataset licence is stated on the mirror.
 
 ## Layout
 

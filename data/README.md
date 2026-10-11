@@ -1,9 +1,15 @@
 # Data
 
 `raw/deliveries.csv` and `raw/matches.csv` are the public IPL ball-by-ball and match files
-(seasons 2008-2018), originally distributed on Kaggle ("Let's play cricket" / IPL dataset).
-The copy here was taken from a public GitHub mirror:
-`https://raw.githubusercontent.com/insaid2018/Term-1/master/Data/Projects/`.
+(seasons 2008-2018). They are a public GitHub mirror of the Kaggle IPL dataset, copied from
+`insaid2018/Term-1`:
+`https://github.com/insaid2018/Term-1/tree/master/Data/Projects`
+(`deliveries.csv` and `matches.csv`). The committed files match that mirror byte for byte.
+
+The mirror repository publishes no licence file. The 2022 drafts cite the Kaggle notebook
+"Let's play cricket" (https://www.kaggle.com/code/ash316/let-s-play-cricket), released under
+the Apache 2.0 licence. That licence covers the notebook, not these CSV files. No dataset
+licence is stated on the mirror.
 
 | File | Rows | SHA-256 |
 |---|---|---|

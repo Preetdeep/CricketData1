@@ -1,0 +1,11 @@
+data/derived/
+__pycache__/
+paper/*.aux
+paper/*.log
+paper/*.bbl
+paper/*.blg
+paper/*.out
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.synctex.gz
+output/tables/permutation_null.npy

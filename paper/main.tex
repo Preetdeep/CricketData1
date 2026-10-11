@@ -1,0 +1,399 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{threeparttable}
+\usepackage{adjustbox}
+\usepackage{enumitem}
+\usepackage[authoryear,round]{natbib}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=black]{hyperref}
+
+\captionsetup{font=small,labelfont=bf,skip=4pt}
+\setlength{\parskip}{0pt}
+\onehalfspacing
+
+% Every number below is produced by the analysis pipeline (see Makefile).
+\input{../output/numbers/build.tex}
+\input{../output/numbers/desc.tex}
+\input{../output/numbers/replicate.tex}
+\input{../output/numbers/main.tex}
+\input{../output/numbers/robust.tex}
+\input{../output/numbers/momentum.tex}
+
+\newcommand{\pp}{\,pp}
+\graphicspath{{../output/figures/}}
+
+\title{\textbf{Pressure, Overconfidence, or Neither?\\ Ball-by-Ball Evidence on Dismissal Risk and Batting Aggression in Twenty20 Cricket}}
+\author{Preet Deep Singh\thanks{Invest India, New Delhi. The views expressed are the author's own and do not represent those of Invest India. Replication code and data: \url{https://github.com/preetdeep/CricketData1}.}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent A common belief in cricket holds that batters are dismissed because a dot ball builds pressure or a boundary breeds overconfidence. We test both claims with \FacedDeliveries{} faced deliveries from \Matches{} Indian Premier League matches (\Seasons). The retrospective comparison behind the belief, the outcome mix of the ball before a wicket against all balls, is driven by sample selection. Asked prospectively, the outcome of the striker's previous ball does not predict dismissal once the match state is held fixed. Equivalence tests rule out increases larger than 10\% of the \BaseRate\% base rate after a dot or a six. Batters do respond to the previous ball. After a dot the boundary rate rises by \MBoundaryDot\pp{}, and after a six by \MBoundarySix\pp{}. A within-innings permutation test shows that the response to a dot, and most of the response to a six, reflects the order of balls rather than the day's conditions. Batters adjust their aggression from ball to ball, and the adjustment does not cost wickets.
+\end{abstract}
+
+\medskip
+\noindent\textbf{Keywords:} cricket; Twenty20; psychological pressure; overconfidence; hot hand; momentum; sequential decision-making\\
+\noindent\textbf{JEL codes:} Z20, D91, C23
+
+\newpage
+
+% =====================================================================
+\section{Introduction}
+% =====================================================================
+
+Commentators, coaches and players share a theory of how batters get out. A run of dot balls is said to ``build pressure'' until the batter attempts a shot that the delivery does not allow. A boundary is said to make the batter ``loose'': emboldened by success, the batter repeats an aggressive stroke against a bowler who has adjusted. Bowlers often describe the second idea in interviews, saying that they attack the stumps after conceding a boundary. Both mechanisms fit long-standing ideas in psychology and economics. Pressure degrades skilled performance \citep{baumeister1984choking,beilock2001fragility}. Recent success inflates confidence beyond what the evidence supports \citep{moore2008trouble}.
+
+The theory makes testable predictions, and ball-by-ball data make it possible to test them. If dot balls build pressure that causes dismissals, the probability that a batter is dismissed on a delivery should be higher when the batter's previous delivery was a dot. If boundaries breed overconfidence, it should be higher after a boundary. The draft that preceded this paper added an innings contrast. Pressure should bind harder in the second innings, when the batting side chases a known target. Overconfidence should bind harder in the first innings, when no target constrains the batter. That draft compared the outcomes of balls bowled immediately before a wicket with the outcomes of all balls, separately by innings. It reported that dot balls and boundaries were both over-represented before wickets, that dots were more over-represented in the second innings, and that boundaries were more over-represented in the first. Those findings fitted both mechanisms.
+
+This paper revisits those findings with a design that can bear their weight and reaches the opposite conclusion. We make three contributions.
+
+First, we show that the retrospective comparison is driven by its sampling rule. To isolate cases where the batter dismissed was also the batter on strike for the previous ball, the draft kept only previous balls on which an even number of runs was scored, so that strike did not change. That rule discards singles and threes, which are \OrigFilterDropShare\% of all deliveries, from the ball-before-wicket sample but not from the comparison sample. Dots and boundaries then look over-represented before wickets by construction. Once the comparison sample passes through the same filter, the dot-ball ``effect'' disappears (ratios of \OrigZeroOneRatioFilt{} and \OrigZeroTwoRatioFilt{} in the two innings).
+
+Second, we estimate the quantity the hypotheses actually concern: the probability that the striker is dismissed on a delivery, conditional on the outcome of the striker's own previous delivery. We hold fixed the over, wickets lost, the striker's balls faced and runs scored, the season, and the identities of the batter, bowler and venue. Raw comparisons mislead here because both risk and the mix of previous outcomes change sharply over an innings. Sixes cluster in the final overs, when dismissal rates are highest. Dots cluster early. With these controls in place, the previous ball carries no information about dismissal risk. The estimated change after a dot is \FullDot\pp{} (95\% CI [\FullDotLo, \FullDotHi]) and after a six \FullSix\pp{} (95\% CI [\FullSixLo, \FullSixHi]), against a base rate of \BaseRate\%. Equivalence tests reject increases larger than 10\% of the base rate. The innings contrasts are small and imprecise, and none survives a correction for multiple testing. The null holds across \RobRows{} alternative specifications, a logit model, outcome and treatment redefinitions, a held-out season and two-way clustered inference.
+
+Third, we show that batters do react to the previous ball, through their scoring rather than their dismissal. After a dot the probability of a boundary on the next ball rises by \MBoundaryDot\pp{} (\MBoundaryDotRel\% of its mean). After a six it rises by \MBoundarySix\pp{} (\MBoundarySixRel\%), and the probability of another six rises by \MSixSix\pp{} (\MSixSixRel\%). Boundary persistence of this kind could reflect the day's conditions (a flat pitch, a struggling bowler) rather than anything about the sequence. We separate the two with a permutation test in the spirit of \citet{miller2018surprised}. We shuffle the order of each batter's deliveries within the innings and hold everything else fixed. The after-dot effect lies far outside the permutation distribution under every specification, including batter-innings fixed effects. The after-six effect does so in four of five specifications. It loses significance only when we absorb the bowler's performance in the match, which suggests that part of it reflects a bowler having a poor day. Batters therefore change their aggression from ball to ball, and on the evidence here the change carries no detectable cost in wickets.
+
+The paper speaks to three literatures. Work on performance under pressure finds choking in some settings and not in others \citep{dohmen2008professionals,apesteguia2010psychological,cao2011performance,gonzalezdiaz2012performing}. Most of that work studies discrete high-stakes events such as penalty kicks or free throws. Cricket offers a repeated, low-stakes source of pressure, the dot ball, that recurs dozens of times per innings. Work on the hot hand has moved from declaring it a fallacy \citep{gilovich1985hot} to recognising both a statistical bias in the classic tests \citep{miller2018surprised} and the possibility that opponents adjust their play in response \citep{green2018hot}. Our behavioural result is a hot hand in the probability of a boundary, estimated with an explicit correction for that bias. Finally, the paper adds to statistical work on cricket \citep{duckworth1998fair,swartz2009modelling,davis2015simulator}. That work typically models outcomes as functions of the match state. Our results support treating dismissal as conditionally independent of the previous ball, and suggest that scoring models should allow for short-run dependence.
+
+Section~\ref{sec:lit} reviews related work. Section~\ref{sec:data} describes the data. Section~\ref{sec:hyp} states the hypotheses. Section~\ref{sec:replication} revisits the retrospective design. Section~\ref{sec:strategy} sets out the empirical strategy. Section~\ref{sec:results} reports the dismissal results and Section~\ref{sec:robust} their robustness. Section~\ref{sec:behaviour} studies the behavioural response. Section~\ref{sec:discussion} discusses interpretation and limitations, and Section~\ref{sec:conclusion} concludes.
+
+% =====================================================================
+\section{Related literature}\label{sec:lit}
+% =====================================================================
+
+\paragraph{Performance under pressure.} Laboratory work shows that pressure can impair well-learned motor skills, either by drawing attention to processes that normally run automatically or by consuming working memory \citep{baumeister1984choking,beilock2001fragility}. Field evidence is mixed. \citet{dohmen2008professionals} finds that professional footballers take penalties worse in some high-pressure situations. \citet{apesteguia2010psychological} show that the team kicking second in a penalty shoot-out wins less often, a result they attribute to psychological pressure. \citet{cao2011performance} find choking at the free-throw line in the closing seconds of close NBA games. By contrast, \citet{gonzalezdiaz2012performing} find that many professional tennis players perform better on important points. Pressure in these studies usually comes from the stakes of a single event. The pressure attributed to dot balls in cricket comes from a different source: a short run of unproductive outcomes in an otherwise routine sequence, with the batting side's run rate falling behind. Whether such accumulated, low-stakes pressure affects performance is an open question.
+
+\paragraph{Overconfidence and momentum.} Overconfidence takes several forms, including overestimating one's own ability and overprecision in one's beliefs \citep{moore2008trouble}. In sport the relevant version is dynamic: recent success leads a player to overestimate the probability that the next attempt will succeed. The hot-hand literature asks the mirror-image question, whether success makes further success more likely. \citet{gilovich1985hot} found no autocorrelation in basketball shooting and called belief in the hot hand a fallacy. \citet{bareli2006twenty} review two decades of mixed findings. \citet{miller2018surprised} show that the standard test, which compares the success rate after a streak with the rate after a non-streak within finite sequences, is biased towards finding no hot hand. Corrected for this bias, the original data show a hot hand. \citet{green2018hot} show in baseball that hot-hand effects can be dampened when opponents respond, and \citet{gauriot2019success} find evidence of momentum in professional tennis using outcomes decided by narrow margins. Cricket is a natural setting for these questions because every delivery is a separate, recorded trial with a binary success (a boundary) and a binary failure (a dismissal).
+
+\paragraph{Cricket analytics.} Statistical work on limited-overs cricket has focused on resource-based target setting \citep{duckworth1998fair} and on simulating matches from ball-level outcome probabilities that depend on the match state \citep{swartz2009modelling,davis2015simulator}. Those models generally treat outcomes as conditionally independent given the state. Our results test that assumption directly. It holds for dismissals but not for boundaries. More broadly, the paper follows work that uses sport as a laboratory for studying decisions made under clear incentives and with precise measurement \citep{kahn2000sports,romer2006firms,walker2001minimax,chiappori2002testing}.
+
+% =====================================================================
+\section{Setting and data}\label{sec:data}
+% =====================================================================
+
+\subsection{Twenty20 cricket and the Indian Premier League}
+
+In Twenty20 (T20) cricket each side bats once for at most 20 overs of six legal deliveries. Its innings ends earlier if it loses ten wickets. The side batting second wins if it passes the first side's total. Two batters are on the field at once: the striker faces the delivery and the non-striker waits at the other end. Batters swap ends, and so swap the strike, when they complete an odd number of runs and at the end of every over. A \emph{dot ball} is a legal delivery from which the striker scores nothing. A \emph{boundary} is four or six runs scored by hitting the ball to or over the boundary rope. A wide is not counted as a ball faced. The striker can be dismissed in several ways. Caught, bowled, leg before wicket (lbw), stumped and hit wicket are credited to the bowler and follow from the striker's interaction with the delivery. Run outs depend largely on running between the wickets and can dismiss either batter.
+
+The Indian Premier League (IPL) is a franchise T20 competition held annually since 2008. It brings together the leading international and Indian domestic players, and matches are scored ball by ball.
+
+\subsection{Data}
+
+The draft that this paper replaces described its data as spanning ``all forms of cricket''. In fact the file it used is IPL ball-by-ball data for 2008--2017, and the \OrigDeliveries{} deliveries it reports match that file exactly. We use the same source extended by one season, \Seasons{}: \RawDeliveries{} deliveries from \RawMatches{} matches, with a companion file that gives each match's season, venue and result. Data preparation (Appendix~\ref{app:data}) removes \DroppedDuplicates{} duplicated records and drops super overs. Each delivery is assigned the match state before it is bowled: the over, the wickets lost, the batting side's runs and legal balls, and in chases the target, runs required and required run rate (RRR). Required run rates are not computed for the \DLMatches{} matches decided by the Duckworth--Lewis method, because their revised targets are not recorded. For each striker we track the balls faced and runs scored so far in the innings, and the outcome of the striker's own previous ball faced. We then drop wides, since they are not balls faced. The resulting panel contains \FacedDeliveries{} faced deliveries, \Batters{} batters and \Bowlers{} bowlers.
+
+The outcome of interest is a bowler-credited dismissal of the striker. Run outs are excluded from the main outcome because they depend on running between the wickets and on the non-striker, not on the shot alone. We show that including them changes nothing. The treatment is the outcome of the striker's previous ball faced, from the striker's point of view, in four categories: a dot (no runs off the bat), 1--3 runs (the reference category), a four, or a six. Our analysis sample consists of the \AnalysisN{} deliveries on which the striker has already faced at least one ball in the innings. It contains \AnalysisOuts{} bowler-credited dismissals, a rate of \AnalysisOutRate\% per ball. A further \FirstBallOuts{} dismissals occur on a batter's first ball and have no previous ball.
+
+Table~\ref{tab:desc} summarises the sample. About a third of deliveries are dots, \ShareFourPrev\% of previous balls are fours and \ShareSixPrev\% are sixes. Caught dismissals account for \ShareCaught\% of bowler-credited dismissals. Outcome rates are very similar across the two innings.
+
+\begin{table}[tbp]
+\centering
+\begin{threeparttable}
+\caption{Descriptive statistics}\label{tab:desc}
+\small
+\input{../output/tables/descriptives.tex}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes:} Faced deliveries (wides excluded) on which the striker has already faced at least one ball in the innings, IPL \Seasons. Runs refer to runs off the bat. The required run rate is defined for chases in matches not decided by the Duckworth--Lewis method.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+% =====================================================================
+\section{Hypotheses}\label{sec:hyp}
+% =====================================================================
+
+Let $Y_{it}$ indicate that striker $i$ is dismissed, by a mode credited to the bowler, on the $t$-th ball the striker faces in an innings. Let $D_{i,t-1}$, $F_{i,t-1}$ and $S_{i,t-1}$ indicate that the striker's previous ball was a dot, a four or a six. The folk theory and the earlier draft imply the following hypotheses, each conditional on the match state.
+
+\begin{description}[leftmargin=1.5em,style=nextline]
+\item[H1 (pressure).] $\Pr(Y_{it}=1 \mid D_{i,t-1}=1) > \Pr(Y_{it}=1 \mid \text{1--3 runs})$. The increase is larger in the second innings, and larger in chases with a high required run rate.
+\item[H2 (overconfidence).] $\Pr(Y_{it}=1 \mid F_{i,t-1}=1 \text{ or } S_{i,t-1}=1) > \Pr(Y_{it}=1 \mid \text{1--3 runs})$. The increase is larger in the first innings.
+\item[H3 (behavioural response).] The previous ball changes the striker's scoring on the next ball, measured by the probabilities of a boundary, a six and a dot.
+\end{description}
+
+H1 and H2 concern dismissal. H3 concerns the channel through which pressure or overconfidence would have to operate: the shots a batter plays. A batter under pressure who raises the risk of the next shot should score boundaries more often \emph{and} be dismissed more often. Finding the first without the second would imply that the extra aggression is either well calibrated or matched by weaker bowling.
+
+% =====================================================================
+\section{Revisiting the retrospective design}\label{sec:replication}
+% =====================================================================
+
+The earlier draft took the record immediately preceding every wicket in the data file. It then kept those records on which the striker scored an even number of runs, or an odd number on the sixth ball of an over. The aim was to keep cases in which the previous ball had been faced by the batter later dismissed. It compared the share of dots and boundaries among these records with the share among all deliveries, separately by innings, using two-sample $t$-tests. Panel~A of Table~\ref{tab:replication} reproduces the procedure exactly on the draft's sample of \OrigDeliveries{} deliveries. It recovers the published figures: \OrigZeroOneBefore\% of balls before a wicket were dots in the first innings and \OrigZeroTwoBefore\% in the second, compared with \OrigZeroOneAll\% and \OrigZeroTwoAll\% of all balls.
+
+\begin{table}[tbp]
+\centering
+\begin{threeparttable}
+\caption{The retrospective comparison and the prospective hazard}\label{tab:replication}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\input{../output/tables/replication.tex}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes:} IPL 2008--2017, the sample used by the earlier draft. Panel~A follows the draft's procedure: ``Before W'' is the delivery immediately preceding each wicket in the data file, kept if the batter scored an even number of runs on it (or an odd number on the sixth ball of an over). ``All'' is every delivery. ``All, filtered'' is every delivery passing the same parity rule. Ratios divide the before-wicket share by the baseline share. Panel~B reports the share of deliveries on which the striker is dismissed (bowler-credited modes), by the outcome of the striker's own previous ball, with the number of deliveries in parentheses.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The design has three problems. The first is decisive. The parity rule removes every delivery on which one or three runs were scored, \OrigFilterDropShare\% of all deliveries, from the ball-before-wicket sample but not from the baseline. Removing a large category from one side of a comparison mechanically raises the shares of every other category on that side. The ``All, filtered'' columns apply the same rule to the baseline. The dot-ball ratio then falls from \OrigZeroOneRatio{} to \OrigZeroOneRatioFilt{} in the first innings and from \OrigZeroTwoRatio{} to \OrigZeroTwoRatioFilt{} in the second. Most of the boundary ratio disappears as well (Figure~\ref{fig:replication}). Second, the parity rule identifies the same striker only imperfectly: in \OrigSameStrikerShare\% of retained cases the previous ball's striker was the batter dismissed. Third, the wicket sample includes run outs (\OrigRunOutShare\% of retained wickets), in which the dismissed batter may not have been on strike.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{fig1_replication.pdf}
+\caption{Dot balls and boundaries before wickets, with and without a like-for-like baseline. IPL 2008--2017. Grey bars show all deliveries; blue bars show all deliveries passing the draft's parity filter; orange bars show the delivery preceding a wicket as selected by the draft.}\label{fig:replication}
+\end{figure}
+
+Panel~B asks the forward-looking question directly: given the outcome of the striker's own previous ball, how likely is the striker to be dismissed on this one? Without any controls, dismissal is \emph{less} likely after a dot (\HazDotOne\% and \HazDotTwo\% in the two innings) than after 1--3 runs (\HazRunOne\% and \HazRunTwo\%). It is more likely after a six (\HazSixOne\% and \HazSixTwo\%). Section~\ref{sec:strategy} shows that the six result is also an artefact, this time of the stage of the innings.
+
+% =====================================================================
+\section{Empirical strategy}\label{sec:strategy}
+% =====================================================================
+
+\subsection{Specification}
+
+We estimate linear probability models of the form
+\begin{equation}\label{eq:main}
+100 \cdot Y_{it} = \beta_D D_{i,t-1} + \beta_F F_{i,t-1} + \beta_S S_{i,t-1} + \mathbf{x}_{it}'\boldsymbol\gamma + \alpha_{b(i)} + \delta_{w(it)} + \nu_{v(it)} + \varepsilon_{it},
+\end{equation}
+where the omitted category is a previous ball yielding 1--3 runs, so that each $\beta$ is measured in percentage points relative to that category. The vector $\mathbf{x}_{it}$ contains a full set of indicators for the over interacted with the innings, the number of wickets lost (0--9), the striker's balls faced so far (13 bins), the striker's runs so far (9 bins) and the season. We refer to these as \emph{match-state fixed effects}. The terms $\alpha_{b}$, $\delta_{w}$ and $\nu_{v}$ are batter, bowler and venue fixed effects. Standard errors are clustered by match, which allows arbitrary correlation among all deliveries in a match. Linear probability models give coefficients on the scale of interest and accommodate high-dimensional fixed effects \citep{angrist2009mostly}. We estimate them with the alternating-projections method of \citet{berge2018fixest} and report logit average marginal effects as a robustness check. To test the innings and chase hypotheses we interact the three treatment indicators with an indicator for the second innings, or with an indicator that the required run rate is at least nine runs per over.
+
+\subsection{Threats to identification}
+
+\paragraph{Match state.} Figure~\ref{fig:over} shows why controls are essential. The dismissal rate per ball roughly triples between the middle overs and the 20th over, as batters trade wickets for runs. Over the same range the share of deliveries preceded by a six more than doubles and the share preceded by a dot halves. Any raw comparison therefore credits sixes with risk that belongs to the death overs, and credits dots with the safety of the early overs. Wickets lost, the striker's balls faced and runs scored matter in the same way: new batters are dismissed more often and play more dots.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{fig2_over_gradient.pdf}
+\caption{The over gradient in dismissal risk and in the previous ball's outcome. Left: share of faced deliveries on which the striker is dismissed (bowler-credited). Right: share of faced deliveries whose striker's previous ball was a dot, a four or a six. IPL \Seasons.}\label{fig:over}
+\end{figure}
+
+\paragraph{Player quality and conditions.} Better batters hit more boundaries and are dismissed less often, and better bowlers concede more dots and take more wickets. The batter and bowler fixed effects absorb permanent differences in ability. In robustness checks we let both vary by season, and add team-innings and bowler-by-match (spell) fixed effects to absorb conditions on the day.
+
+\paragraph{Selection on survival.} Only batters who survive to ball $t$ contribute an observation at $t$. We condition on balls faced and runs scored, so comparisons are always among batters at the same point in their innings with the same output. Within that set, the previous ball's outcome is what varies.
+
+\paragraph{Small-group fixed effects.} Fixed effects for small groups of consecutive deliveries, such as an over, a bowler's spell or a batter's innings, induce a mechanical correlation between the lagged treatment and the demeaned outcome \citep{nickell1981biases}. This is the regression analogue of the streak-selection bias identified by \citet{miller2018surprised}. Dismissal ends a batter's sequence, so the bias is acute for the dismissal outcome. We therefore use such fixed effects only in robustness checks, and for the behavioural outcomes we estimate and remove the bias by permutation (Section~\ref{sec:behaviour}).
+
+\paragraph{Inference.} With three treatment coefficients, two innings interactions per coefficient and several outcomes, some nominally significant estimates are expected by chance. We report Benjamini--Hochberg adjusted $p$-values for the six innings-specific tests \citep{benjamini1995controlling}. A null result is informative only if the estimates are precise, so we also report two one-sided tests of equivalence \citep{schuirmann1987comparison,lakens2017equivalence} against a smallest effect of interest of $\pm 10\%$ of the base dismissal rate ($\pm\EqDelta$\pp{}), together with minimum detectable effects.
+
+% =====================================================================
+\section{Results: dismissal}\label{sec:results}
+% =====================================================================
+
+\subsection{Main estimates}
+
+Table~\ref{tab:main} reports estimates of equation~\eqref{eq:main}. Column~(1), without controls, reproduces the pattern of Panel~B of Table~\ref{tab:replication}: the coefficient on a previous dot is \RawDot\pp{} and that on a previous six is \RawSix\pp{}. Adding the match-state fixed effects in column~(2) removes both. The dot coefficient becomes \StateDot\pp{} ($p\StateDotP$) and the six coefficient \StateSix\pp{} ($p\StateSixP$). Batter, bowler and venue fixed effects in column~(3) make little further difference. The dot coefficient is \FullDot\pp{} (95\% CI [\FullDotLo, \FullDotHi]), the six coefficient \FullSix\pp{} (95\% CI [\FullSixLo, \FullSixHi]) and the four coefficient \FullFour\pp{} (95\% CI [\FullFourLo, \FullFourHi]). The four coefficient is negative, the opposite sign to H2. The six and four coefficients are not significantly different from each other ($p\SixMinusFourP$). Figure~\ref{fig:coefs} shows how the estimates move as controls are added.
+
+\begin{table}[tbp]
+\centering
+\begin{threeparttable}
+\caption{Dismissal and the striker's previous ball}\label{tab:main}
+\small
+\input{../output/tables/main.tex}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes:} Linear probability models. The dependent variable is 100 if the striker is dismissed on the delivery by a bowler-credited mode (caught, bowled, lbw, stumped, hit wicket), 0 otherwise. The omitted category is a previous ball yielding 1--3 runs off the bat. Match-state FE are over$\times$innings, wickets lost, striker's balls faced (13 bins), striker's runs (9 bins) and season. ``Consecutive'' keeps deliveries whose striker also faced the immediately preceding delivery of the innings; ``Same over'' additionally requires the two to fall in the same over. Standard errors clustered by match in parentheses. *** $p<0.01$, ** $p<0.05$, * $p<0.1$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{fig3_dismissal_coefs.pdf}
+\caption{Change in the probability of dismissal after a dot, a four or a six, relative to a previous ball of 1--3 runs, as controls are added. Points are estimates of equation~\eqref{eq:main}; bars are 95\% confidence intervals clustered by match. The shaded band marks $\pm 10\%$ of the base dismissal rate.}\label{fig:coefs}
+\end{figure}
+
+These are precise nulls. The upper end of the 90\% confidence interval for the dot coefficient is \EqDotHi\pp{}, \EqDotRelHi\% of the base rate. A one-sided test rejects an increase of 10\% or more ($p\EqDotPUp$). For a six the corresponding bound is \EqSixHi\pp{} (\EqSixRelHi\% of the base rate; $p\EqSixPUp$). With the observed standard errors, the design has 80\% power to detect an effect of \MDEDot\pp{} after a dot (\MDEDotRel\% of the base rate) and \MDESix\pp{} after a six (\MDESixRel\%). Effects of the size implied by the folk theory, in which a dot or a boundary is a meaningful precursor to a wicket, would have been detected.
+
+\subsection{Innings and chase pressure}
+
+Columns~(4)--(6) of Table~\ref{tab:main} interact the treatments with the second innings. The pressure hypothesis predicts a positive dot$\times$second-innings interaction. The estimate is \IntDotX\pp{} ($p\IntDotXP$). The overconfidence hypothesis predicts negative interactions for fours and sixes. The four interaction is \IntFourX\pp{} ($p\IntFourXP$), the largest estimate in a predicted direction, and the six interaction is \IntSixX\pp{} ($p\IntSixXP$). After a Benjamini--Hochberg correction across the six innings-specific coefficients, the smallest adjusted $p$-value is $p\BHMinP$. Restricting the sample to consecutive deliveries (column~5) makes the four interaction significant at the 5\% level. The restriction to the same over (column~6) does not, and no corresponding pattern appears for sixes, which should carry the stronger overconfidence signal. The dot interaction is close to zero in every column.
+
+The second-innings indicator is a blunt proxy for pressure, since many chases are comfortable. Table~\ref{tab:chase} uses the required run rate instead. Restricting to \ChaseN{} deliveries in chases with a known target, we interact the treatments with an indicator that the required rate is at least nine runs per over (\ChaseHighShare\% of chase deliveries). The regression also includes fixed effects for bins of the required rate. If dot balls build pressure, they should do so most in a demanding chase. Instead the dot$\times$high-RRR interaction is \ChaseDotHi\pp{} ($p\ChaseDotHiP$). The only interaction significant at the 10\% level is for sixes (\ChaseSixHi\pp{}, $p\ChaseSixHiP$), and its sign is the reverse of the overconfidence hypothesis, which places overconfidence in the unconstrained first innings.
+
+\begin{table}[tbp]
+\centering
+\begin{threeparttable}
+\caption{Chase pressure: interactions with the required run rate}\label{tab:chase}
+\small
+\input{../output/tables/chase.tex}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes:} Second-innings deliveries in matches with a known target (Duckworth--Lewis matches excluded) and runs still required. RRR is the required run rate before the delivery. Controls as in column~(3) of Table~\ref{tab:main}, plus RRR-bin fixed effects (<6, 6--8, 8--10, 10--12, 12+). Standard errors clustered by match. *** $p<0.01$, ** $p<0.05$, * $p<0.1$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Runs of dots}
+
+Pressure is often described as cumulative: one dot is routine, but three in a row are not. Figure~\ref{fig:dotrun} (left panel) replaces the single dot indicator with indicators for the length of the run of consecutive dots ending at the previous ball (1, 2, 3, 4 or more). No dose response appears. Each coefficient is small and statistically indistinguishable from zero, and the point estimates for three or more dots are negative. The right panel shows the corresponding estimates for the probability of a boundary, discussed in Section~\ref{sec:behaviour}.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{fig5_dot_runs.pdf}
+\caption{Runs of consecutive dot balls. Each point is the change in the outcome on the current ball (percentage points) when the striker's previous ball ended a run of $k$ dots, relative to a previous ball of 1--3 runs, with controls as in column~(3) of Table~\ref{tab:main}. Bars are 95\% confidence intervals clustered by match.}\label{fig:dotrun}
+\end{figure}
+
+% =====================================================================
+\section{Robustness}\label{sec:robust}
+% =====================================================================
+
+Table~\ref{tab:robust} re-estimates column~(3) of Table~\ref{tab:main} under \RobRows{} alternative choices. Across all of them, the dot coefficient ranges from \RobDotMin{} to \RobDotMax\pp{} and the six coefficient from \RobSixMin{} to \RobSixMax\pp.
+
+\begin{table}[tbp]
+\centering
+\begin{threeparttable}
+\caption{Robustness of the dismissal estimates}\label{tab:robust}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\input{../output/tables/robustness.tex}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes:} Each row reports the coefficients on a previous dot, four and six (percentage points; omitted category 1--3 runs) from a separate regression. Unless stated, controls are match-state, batter, bowler and venue fixed effects, and standard errors (in parentheses) are clustered by match. ``Strict dot'' requires no extras on the previous ball and adds an indicator for byes and leg byes. ``Previous ball of the innings'' uses the immediately preceding faced delivery whoever faced it, the definition closest to the earlier draft, and adds an indicator for a wicket on that ball. The 2018 season uses state fixed effects only. *** $p<0.01$, ** $p<0.05$, * $p<0.1$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\paragraph{Outcome definitions.} Counting run outs as dismissals, or restricting to caught dismissals (the mode most associated with an ambitious shot), leaves the estimates unchanged. Restricted to bowled and lbw dismissals, the dot coefficient is slightly negative.
+
+\paragraph{Treatment definitions.} Defining a dot strictly, with no runs of any kind, makes no difference. Using the previous delivery of the innings whoever faced it, the team-level notion of pressure closest to the earlier draft, also produces null results for dots and sixes.
+
+\paragraph{Samples.} The estimates are similar on the draft's 2008--2017 sample and in the held-out 2018 season, although the 2018 estimates are imprecise. They are also similar for strikers who have faced at least five balls, which removes the most fragile phase of an innings, for innings with at most five wickets down, and outside the death overs.
+
+\paragraph{Controls.} Batter-season and bowler-season fixed effects allow ability to change over time, and leave the results unchanged. Team-innings fixed effects absorb pitch and weather on the day. Bowler-by-match fixed effects absorb a bowler's form within a spell. With these, the dot coefficient rises to \RobDotMax\pp{}, the one estimate in the table that is positive and significant at 5\%. Two considerations argue against reading this as evidence for H1. First, a spell contains about two dozen deliveries and few dismissals, which is exactly the small-group setting in which demeaning a lagged indicator against an outcome that ends a batter's sequence produces bias of the kind discussed in Section~\ref{sec:strategy}. Second, even this estimate is below the 10\% equivalence margin in its point value, and it is one of \RobRows{} specifications.
+
+\paragraph{Functional form and inference.} A logit model with the match-state controls gives average marginal effects of \LogitDot\pp{} for a dot ($p\LogitDotP$), \LogitFour\pp{} for a four ($p\LogitFourP$) and \LogitSix\pp{} for a six ($p\LogitSixP$). Two-way clustering by match and batter \citep{cameron2011robust} leaves the inference unchanged.
+
+% =====================================================================
+\section{The behavioural response}\label{sec:behaviour}
+% =====================================================================
+
+The previous ball does not predict dismissal. Does it predict anything? Table~\ref{tab:behaviour} replaces the dismissal outcome with the striker's scoring on the current ball, using the controls of column~(3) of Table~\ref{tab:main}. Figure~\ref{fig:behaviour} expresses the estimates relative to each outcome's mean.
+
+\begin{table}[tbp]
+\centering
+\begin{threeparttable}
+\caption{What the striker does next}\label{tab:behaviour}
+\small
+\input{../output/tables/momentum_outcomes.tex}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes:} Each column is a separate linear probability model (column ``Runs'': OLS on runs off the bat). Outcomes refer to the current delivery: a boundary (4 or 6 off the bat), a six, a dot (no runs off the bat and no dismissal), runs off the bat, and a bowler-credited dismissal. The omitted category is a previous ball yielding 1--3 runs. Controls as in column~(3) of Table~\ref{tab:main}. Standard errors clustered by match. *** $p<0.01$, ** $p<0.05$, * $p<0.1$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{fig4_behaviour.pdf}
+\caption{Outcomes on the current ball by the striker's previous ball, relative to a previous ball of 1--3 runs, as a percentage of each outcome's mean. Bars are 95\% confidence intervals clustered by match.}\label{fig:behaviour}
+\end{figure}
+
+Two patterns stand out. After a dot, the striker is \MBoundaryDot\pp{} more likely to hit a boundary ($p\MBoundaryDotP$), \MBoundaryDotRel\% of the mean, and less likely to play another dot. The left panel of Figure~\ref{fig:dotrun} showed no rise in dismissals after runs of dots. The right panel shows that the boundary response is present after one or two dots. After a six, the striker is \MBoundarySix\pp{} more likely to hit another boundary ($p\MBoundarySixP$, \MBoundarySixRel\% of the mean) and \MSixSix\pp{} more likely to hit another six ($p\MSixSixP$, \MSixSixRel\% of the mean). Expected runs off the bat rise by \MRunsSix{} after a six and by \MRunsDot{} after a dot. Neither response is accompanied by a detectable change in dismissal risk. Fours, unlike sixes, are not followed by more boundaries.
+
+\subsection{Order or conditions?}
+
+A positive association between consecutive boundaries need not reflect any response to the previous ball. A batter facing a weak bowler on a flat pitch will hit many boundaries, so any ball that follows a boundary is more likely to come from such an innings. The batter, bowler and venue fixed effects absorb permanent differences, but not conditions on the day. Table~\ref{tab:fe} adds progressively tighter fixed effects: match, team innings, bowler by match and, most demanding, batter by innings. The last compares deliveries within the same batter's innings.
+
+\begin{table}[tbp]
+\centering
+\begin{threeparttable}
+\caption{Boundary on the current ball: tightening the fixed effects}\label{tab:fe}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\input{../output/tables/momentum_fe.tex}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes:} Dependent variable is 100 if the current delivery is hit for four or six. Column~(1) uses the controls of column~(3) of Table~\ref{tab:main}. Columns~(2)--(5) add or substitute the fixed effects named. Standard errors clustered by match. These estimates are not corrected for the finite-sequence bias; see Table~\ref{tab:perm}. *** $p<0.01$, ** $p<0.05$, * $p<0.1$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The uncorrected estimates in columns~(4) and~(5) change sharply, and the four and six coefficients turn negative. That is what the finite-sequence bias predicts. Within a short group of deliveries, a ball that follows a boundary is a ball that is not itself the boundary, so demeaning within the group pushes the coefficient on a lagged boundary downward \citep{nickell1981biases,miller2018surprised}. To measure this bias and the role of conditions on the day, we use a permutation test \citep{young2019channeling}. Within each of the \BatterInnings{} batter-innings (on average \BatterInningsMeanBalls{} faced balls), we randomly reorder the striker's runs across deliveries. The dismissal ball stays in place, and the match state, opponents and balls-faced counts stay attached to their positions. Runs scored so far are recomputed for each permutation. A permuted dataset has the same batter-innings, the same composition of each innings and the same conditions on the day as the real data. Only the order of balls within an innings is random. Re-estimating each specification on \PermR{} permuted datasets gives the distribution of each coefficient under the null that order carries no information. The mean of that distribution captures the composition and finite-sequence effects. The difference between the observed coefficient and the null mean is the order effect.
+
+\begin{table}[tbp]
+\centering
+\begin{threeparttable}
+\caption{Order effects net of the permutation null}\label{tab:perm}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\input{../output/tables/permutation.tex}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes:} ``Est.'' is the observed coefficient from Table~\ref{tab:fe}. ``Null'' is the mean coefficient across \PermR{} datasets in which each striker's runs are randomly reordered within the innings, holding the dismissal ball, match state and opponents fixed. ``Corr.'' is the difference. Stars give two-sided permutation $p$-values for the difference: *** $p<0.01$, ** $p<0.05$, * $p<0.1$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+Table~\ref{tab:perm} and Figure~\ref{fig:perm} report the results. The null means for the batter-innings specification are large and negative, which confirms the size of the finite-sequence bias. Against these benchmarks the observed coefficients are clearly unusual. In the pooled specification the corrected after-dot effect is \PADotCorr\pp{} and the corrected after-six effect \PASixCorr\pp{}. In the batter-innings specification they are \PEDotCorr\pp{} and \PESixCorr\pp{}. With \PermR{} permutations the smallest attainable $p$-value is 0.005, and all four estimates attain it. The corrected after-dot effect lies between \PCDotCorr{} and \PEDotCorr\pp{} across the five specifications and is significant in each. The after-six effect is stable at about 1.8\pp{} in the first three specifications. It falls to \PDSixCorr\pp{} ($p\PDSixP$) with bowler-by-match fixed effects, which compare deliveries within a single bowler's performance in a match. Some of the persistence after a six therefore reflects a bowler who is being hit on the day. That component is absent from the batter-innings comparison, which holds the batter's day fixed but not the bowler's. The corrected after-four effect is small in every specification except the bowler-by-match one (\PDFourCorr\pp{}, $p\PDFourP$). The order of balls within an innings therefore carries information beyond shared conditions: unambiguously after a dot, and after a six with the qualification that a struggling bowler accounts for part of the effect.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{fig6_permutation.pdf}
+\caption{Permutation distributions of the boundary coefficients. Histograms show coefficients across \PermR{} datasets in which each striker's runs are randomly reordered within the innings. Vertical lines mark the observed coefficients. Blue: match-state, batter, bowler and venue fixed effects. Orange: batter-innings fixed effects.}\label{fig:perm}
+\end{figure}
+
+\subsection{Robustness of the behavioural response}
+
+Table~\ref{tab:momrobust} re-estimates the boundary equation on alternative samples and with season-varying player effects. The after-dot coefficient ranges from \RbDotMin{} to \RbDotMax\pp{} and the after-six coefficient from \RbSixMin{} to \RbSixMax\pp{}. Both are present in each innings, outside the death overs, for set batters, and when the previous ball was bowled in the same over by the same bowler. In the single held-out season of 2018 the point estimates are at least as large, although the after-dot estimate is imprecise. In chases the after-dot boundary response does not grow with the required run rate (interaction \HetDotHi\pp{}, $p\HetDotHiP$). The response therefore appears to be a general feature of how batters manage an innings, not a reaction to the scoreboard.
+
+\begin{table}[tbp]
+\centering
+\begin{threeparttable}
+\caption{Robustness of the boundary response}\label{tab:momrobust}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\input{../output/tables/momentum_robust.tex}
+\begin{tablenotes}[flushleft]\footnotesize
+\item \emph{Notes:} Dependent variable is 100 if the current delivery is hit for four or six. Each row is a separate regression with the controls of column~(3) of Table~\ref{tab:main} unless stated. Standard errors clustered by match in parentheses. *** $p<0.01$, ** $p<0.05$, * $p<0.1$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+% =====================================================================
+\section{Discussion}\label{sec:discussion}
+% =====================================================================
+
+\paragraph{Interpretation.} The evidence fits a simple account. After a dot, batters score more aggressively, probably to restore the run rate and rotate the strike. After a six, they continue to attack, perhaps because the six revealed something about the bowler, the length or the field that makes another attacking shot attractive. Neither adjustment raises the probability of dismissal. This is what we would expect if batters choose shots so that the extra reward is not bought with extra risk, or if bowlers respond in ways that offset the batter's adjustment. The data cannot separate these explanations, because ball-by-ball records do not include the delivery's line and length, the shot attempted or the field set. The second explanation parallels the equilibrium adjustment documented by \citet{green2018hot}. Either way, the folk theory fails on the specific point at issue. Neither the pressure of a dot ball nor the exhilaration of a boundary shows up as an increased chance of getting out.
+
+\paragraph{Why the belief persists.} The belief is easy to form from memorable cases. A wicket that follows a boundary or a run of dots makes a vivid story, and observers recall it more easily than the many boundaries and dots that are followed by nothing \citep{tversky1973availability}. The draft that preceded this paper fell into a statistical version of the same trap: it compared the ball before each wicket with a baseline that had been selected differently. The prospective question, how often a dot is followed by a wicket compared with a single, is the one that the hypothesis concerns, and its answer is ``no more often''.
+
+\paragraph{Practical implications.} For bowling sides the results caution against strategies that rely on a batter's supposed loss of composure after a boundary or a run of dots. For batting sides they suggest that the aggressive response to a dot ball carries no detectable cost in wickets. For modellers, dismissal can be treated as independent of the previous ball given the match state, but boundary probabilities cannot. Simulators that ignore short-run dependence in scoring may misstate the distribution of team totals.
+
+\paragraph{Limitations.} The sample covers one competition, eleven seasons and one format. In longer formats a dot ball carries less scoreboard cost, so the pressure it creates, and batters' responses to it, may differ. The data record outcomes, not intentions. We observe neither the shot attempted, nor the field, nor the bowler's line and length. We cannot therefore tell whether batters attempt more aggressive shots after a dot or simply find them more often. The equivalence margins rule out effects larger than about a tenth of the base rate, but cannot exclude smaller ones. Finally, the permutation test treats the order of balls within an innings as exchangeable under the null. A smooth within-innings trend in aggression, beyond what balls faced, runs scored and over capture, could account for part of the order effect.
+
+% =====================================================================
+\section{Conclusion}\label{sec:conclusion}
+% =====================================================================
+
+Cricket's folk theory holds that dot balls build pressure and boundaries breed overconfidence, and that both lead to wickets. An earlier version of this study appeared to confirm it. Re-examined, the confirmation came from a selection artefact. With \FacedDeliveries{} deliveries from eleven IPL seasons, the outcome of a batter's previous ball does not predict dismissal once the match state is held fixed, and the estimates are precise enough to rule out effects larger than a tenth of the base rate. Batters do respond to the previous ball. They hit boundaries more often after a dot and after a six. The permutation evidence shows that the response to a dot depends on the order of balls rather than on the day's conditions, and that the response to a six does so in part, with the rest reflecting a bowler who is being hit. The response comes without a detectable cost in wickets.
+
+Two extensions would sharpen these conclusions. Ball-tracking and shot-type data would show whether batters change the shots they attempt or only how often those shots succeed. Data from Test and one-day cricket would show whether the same patterns hold when the scoreboard cost of a dot ball is lower.
+
+\section*{Data availability statement}
+The ball-by-ball data are the public IPL deliveries and matches files (2008--2018). The copy in the replication repository is the public GitHub mirror \texttt{insaid2018/Term-1} of the Kaggle IPL dataset; that mirror publishes no licence. SHA-256 checksums are included, and the code reproduces every table, figure and number in the paper from the raw files with a single command (\texttt{make}).
+
+\section*{Declaration of conflicting interests}
+The author declares no potential conflicts of interest with respect to the research, authorship and/or publication of this article.
+
+\section*{Funding}
+The author received no financial support for the research, authorship and/or publication of this article.
+
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\appendix
+\section{Data construction}\label{app:data}
+
+\paragraph{Source and coverage.} The deliveries file contains one row per delivery, including wides and no-balls, with the over, the ball number within the over, the striker, non-striker and bowler, runs off the bat, extras by type, and the dismissed player and mode of dismissal. The matches file supplies the season, venue, result and an indicator for matches decided by the Duckworth--Lewis method. The draft that preceded this paper used the 2008--2017 seasons: \OrigDeliveries{} deliveries from \OrigMatches{} matches.
+
+\paragraph{Ordering and duplicates.} Deliveries are ordered within each innings by their position in the file, which follows the scorer's sequence. Match 7946 (2018) contains \DroppedDuplicates{} rows that exactly duplicate earlier rows of the same innings, one of them recorded out of sequence. These are removed. Super-over rows (innings 3 and 4) are removed.
+
+\paragraph{Faced deliveries.} A wide is not a ball faced and is dropped after the match state is computed. No-balls are balls faced and are retained. The striker's balls faced and runs scored before each delivery are cumulative counts within the batter's innings.
+
+\paragraph{Previous ball.} The striker's previous ball is the last faced delivery by the same striker in the same innings. It is \emph{consecutive} if it was also the immediately preceding faced delivery of the innings (\ConsecutiveShare\% of the analysis sample). Previous-ball categories use runs off the bat: dot (0), 1--3 runs (1, 2, 3, and the rare 5 or 7), four (4) and six (6).
+
+\paragraph{Dismissals.} Bowler-credited dismissals are caught, caught and bowled, bowled, lbw, stumped and hit wicket, and count only when the striker is the player dismissed. Run outs (\RunOuts{} in regulation innings), retirements and obstructing the field are excluded from the main outcome.
+
+\paragraph{Chase state.} The target is the first-innings total plus one. Runs required, balls remaining (120 minus legal balls bowled) and the required run rate are computed before each delivery for second innings not decided by the Duckworth--Lewis method.
+
+\end{document}
